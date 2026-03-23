@@ -9,7 +9,7 @@ import Navigation from "./Navigation";
 
 export default function MapNavbar() {
   return (
-    <nav className="flex h-[8vh] items-center justify-between bg-white px-6 py-4 text-black shadow-sm">
+    <nav className="flex h-[6vh] items-center justify-between bg-white px-6 py-4 text-black shadow-sm">
       <h1 className="text-xl font-bold">Utility ID</h1>
 
       <Navigation />

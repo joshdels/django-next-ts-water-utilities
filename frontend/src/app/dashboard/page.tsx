@@ -1,6 +1,6 @@
 import FloatingDashboard from "@/features/dashboard/sidebar/FloatingDashboard";
 import SearchPanel from "@/features/dashboard/sidebar/SearchSection";
-import DemoMap from "@/features/homepage/demo/DemoMap";
+import DemoMap from "@/features/homepage/demo/MapLibre";
 import MapNavbar from "@/features/dashboard/navbar/MapNavbar";
 
 export default function Project() {

@@ -11,7 +11,7 @@ export default function SearchPanel() {
   };
 
   return (
-    <div className="m-5 flex w-[30vw] items-center overflow-hidden rounded-md bg-white text-black shadow-md">
+    <div className="m-5 flex w-150 items-center overflow-hidden rounded-md bg-white text-black shadow-md">
       <input
         type="text"
         placeholder="Search by Parcel ID"
