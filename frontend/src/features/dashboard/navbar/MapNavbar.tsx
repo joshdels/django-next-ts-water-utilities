@@ -1,16 +1,10 @@
-import {
-  fileReport24,
-  signOut24,
-  group24,
-  utilityNetworkLayer24,
-  projectTemplate24,
-} from "@esri/calcite-ui-icons";
+import { signOut24 } from "@esri/calcite-ui-icons";
 import Navigation from "./Navigation";
 
 export default function MapNavbar() {
   return (
-    <nav className="flex h-[6vh] items-center justify-between bg-white px-6 py-4 text-black shadow-sm">
-      <h1 className="text-xl font-bold">Utility ID</h1>
+    <nav className="flex h-[6vh] items-center justify-between bg-white px-6 py-4 text-black shadow-lg z-50">
+      <h1 className="text-xl font-bold">Utility View</h1>
 
       <Navigation />
 

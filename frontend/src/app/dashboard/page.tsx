@@ -1,3 +1,5 @@
+"use client";
+
 import FloatingDashboard from "@/features/dashboard/sidebar/FloatingDashboard";
 import SearchPanel from "@/features/dashboard/sidebar/SearchSection";
 import DemoMap from "@/features/homepage/demo/MapLibre";
