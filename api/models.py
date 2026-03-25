@@ -6,7 +6,16 @@ from django.contrib.auth.models import User
 class Project(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=255, blank=True)
-    location = models.CharField(max_length=255, blank=True)
+    description = models.CharField(max_length=500, blank=True)
+    logo = models.ImageField(upload_to="logos/", null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class ProjectFile(models.Model):
+    project = models.ForeignKey(
+        Project, on_delete=models.CASCADE, null=True, blank=True
+    )
+    file = models.FileField(upload_to="project_files/")
 
 
 class Asset(models.Model):

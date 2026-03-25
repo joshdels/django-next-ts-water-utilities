@@ -17,14 +17,34 @@ techstack
 ---
 
 ### Gettings started
-
 For testing please make it ensure you have a postgres installed with postgis enabled
 
+Ensure your .env file looks like this
 ```
-cd backend
+PROJECT_KEY="django-project-key"
+   
+ALLOWED_HOSTS="host"
+DEBUG=False
+
+# database postgres
+DB_NAME="db-name"
+DB_USER="user-name"
+DB_PASSWORD="your-password"
+DB_HOST="db-connected-to"
+DB_PORT="port"
+
+CORS_URL="your-frontend-url"
+
+```
+
+
+```
 python3 -m venv .venv
 pip install -r requirements.txt
 python migrate
 python manage.py runserver
+python manage.py migrate
 ```
+
+
 

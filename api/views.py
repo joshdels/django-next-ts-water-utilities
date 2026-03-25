@@ -9,8 +9,10 @@ class ProjectViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectSerializer
 
     def get_queryset(self):
-        user = self.request.user
-        return Project.objects.filter(owner=user)
+        return Project.objects.filter(owner=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
 class AssetViewSet(viewsets.ModelViewSet):
