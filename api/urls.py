@@ -1,5 +1,10 @@
 from django.urls import path, include
-from api.views import ProjectViewSet, AssetViewSet, NodeViewSet, PipeViewSet
+from api.views import (
+    ProjectViewSet,
+    AssetViewSet,
+    NodeViewSet,
+    PipeViewSet,
+)
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
