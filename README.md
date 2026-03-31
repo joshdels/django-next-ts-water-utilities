@@ -12,6 +12,8 @@ techstack
 1. django rest-framework
   - jwt authentication
   - routers api endpoints
+2. Docker 
+3. Github Actions
 
 
 ---

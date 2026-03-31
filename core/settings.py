@@ -45,11 +45,9 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+cors_env = os.getenv("CORS_URLS", "")
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "https://next-utilities-map.vercel.app",
-]
+CORS_ALLOWED_ORIGINS = [url.strip() for url in cors_env.split(",") if url.strip()]
 
 ROOT_URLCONF = "core.urls"
 
