@@ -10,9 +10,9 @@ services:
     ports:
       - "8000:8000"
     restart: unless-stopped
-#     networks:
-#       - gis_centralize_db
+    networks:
+      - gis_centralize_db
 
-# networks:
-#   gis_centralize_db:
-#     external: true
+networks:
+  gis_centralize_db:
+    external: true
