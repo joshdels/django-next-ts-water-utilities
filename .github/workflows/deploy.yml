@@ -3,7 +3,7 @@ name: Deploy to Server Vultr
 on:
   push:
     branches:
-      - main2
+      - main
 
 jobs:
   deploy:

@@ -1,4 +1,5 @@
 # django-next-ts-water-utilities
+---
 
 This project is designed to manage water utilities engineering projects, transforming CAD files into georeferenced data and deploying them on a WebGIS platform.
  It aims to provide a scalable, maintainable system for utilities management.
@@ -48,5 +49,23 @@ python manage.py runserver
 python manage.py migrate
 ```
 
+---
+
+### Deployment
+vps
+```
+cd folder_name
+git clone
+docker-compose -f .docker/docker-compose.yml up -d build
+```
+
+ci/cd
+pull.push on main 
+secure setup this repo in github actions
+```
+SERVER_IP=your_ip
+SERVER_USER=username
+SSH_PRIVATE_KEY=generate_private_key
+```
 
 
