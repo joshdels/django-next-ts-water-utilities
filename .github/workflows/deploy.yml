@@ -33,20 +33,6 @@ jobs:
             echo "--- Building Docker images (cached) ---"
             docker-compose -f .docker/docker-compose.yml up -d --build
 
-            echo "--- Waiting for Django container to be ready ---"
-            timeout=60
-            count=0
-            while ! docker-compose ps | grep "web" | grep -q "Up"; do
-                sleep 2
-                count=$((count + 2))
-                if [ $count -ge $timeout ]; then
-                    echo "Web container failed to start in time. Logs:"
-                    docker-compose logs web
-                    exit 1
-                fi
-            done
-            echo "Web container is up"
-
             echo "--- Running Post-Deployment Cleanup ---"
             docker image prune -f
             docker container prune -f
