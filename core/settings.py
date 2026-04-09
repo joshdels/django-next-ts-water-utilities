@@ -97,6 +97,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "core",
     "api",
+    "jobs",
 ]
 
 MIDDLEWARE = [
