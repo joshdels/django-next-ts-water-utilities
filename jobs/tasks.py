@@ -1,5 +1,4 @@
 import os
-import uuid
 import time
 import zipfile
 from celery import shared_task

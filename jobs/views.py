@@ -1,5 +1,4 @@
 import os
-import tempfile
 from core.celery import app
 from celery.result import AsyncResult
 from django.http import JsonResponse, HttpResponse, FileResponse
@@ -7,6 +6,10 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 
 from .tasks import process_dxf_task
+
+
+import os
+import uuid
 
 
 @api_view(["POST"])
@@ -20,10 +23,15 @@ def process_dxf(request):
 
     original_name = uploaded_file.name
 
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".dxf") as temp:
+    MEDIA_DIR = "/app/media/tmp"
+    os.makedirs(MEDIA_DIR, exist_ok=True)
+
+    file_id = str(uuid.uuid4())
+    temp_path = os.path.join(MEDIA_DIR, f"{file_id}.dxf")
+
+    with open(temp_path, "wb") as f:
         for chunk in uploaded_file.chunks():
-            temp.write(chunk)
-        temp_path = temp.name
+            f.write(chunk)
 
     task = process_dxf_task.delay(temp_path, original_name)
 
