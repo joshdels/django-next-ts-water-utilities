@@ -12,6 +12,27 @@ services:
     networks:
       - gis_centralize_db
 
+  celery:
+    build:
+      context: ../
+      dockerfile: .docker/Dockerfile
+    container_name: django-utils-celery
+    command: celery -A core worker --loglevel=info --concurrency=1
+    env_file:
+      - ../.env.prod
+    restart: unless-stopped
+    networks:
+      - gis_centralize_db
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7
+    container_name: django-utils-redis
+    restart: unless-stopped
+    networks:
+      - gis_centralize_db
+
 networks:
   gis_centralize_db:
     external: true

@@ -1,16 +1,19 @@
 import os
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
-from django.http import HttpResponse, FileResponse
 import tempfile
+from core.celery import app
+from celery.result import AsyncResult
+from django.http import JsonResponse
+from django.http import HttpResponse, FileResponse
+from rest_framework.permissions import AllowAny
+from rest_framework.decorators import api_view, permission_classes
 
-from .services.dxf_inspect import run_inspection
-from .services.dxf_extract import extract_to_geopackage
+from .tasks import inspect_file_task, convert_to_geopackage_task
 
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def inspect_file(request):
+
     uploaded_file = request.FILES.get("file")
 
     if not uploaded_file:
@@ -19,24 +22,21 @@ def inspect_file(request):
     original_name = uploaded_file.name
 
     with tempfile.NamedTemporaryFile(delete=False, suffix=".dxf") as temp:
-        temp.write(uploaded_file.read())
+        for chunk in uploaded_file.chunks():
+            temp.write(chunk)
         temp_path = temp.name
 
-    try:
-        report_text = run_inspection(temp_path, original_name)
+    task = inspect_file_task.delay(temp_path, original_name)
 
-        response = HttpResponse(report_text, content_type="text/plain")
-        response["Content-Disposition"] = 'attachment; filename="report.txt"'
-
-        return response
-
-    except Exception as e:
-        return HttpResponse(f"Error: {str(e)}", status=500)
+    return JsonResponse(
+        {"message": "Processing started", "task_id": task.id}, status=202
+    )
 
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def convert_to_geopackage(request):
+
     uploaded_file = request.FILES.get("file")
 
     if not uploaded_file:
@@ -45,33 +45,43 @@ def convert_to_geopackage(request):
     original_name = uploaded_file.name
     base_name = os.path.splitext(original_name)[0]
 
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".dxf") as temp_dxf:
-        temp_dxf.write(uploaded_file.read())
-        temp_dxf_path = temp_dxf.name
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".dxf") as temp:
+        for chunk in uploaded_file.chunks():
+            temp.write(chunk)
+        temp_path = temp.name
 
-    temp_gpkg = tempfile.NamedTemporaryFile(delete=False, suffix=".gpkg")
-    temp_gpkg_path = temp_gpkg.name
-    temp_gpkg.close()
+    task = convert_to_geopackage_task.delay(temp_path, base_name)
 
-    try:
-        output_path = extract_to_geopackage(
-            file_path=temp_dxf_path, output_path=temp_gpkg_path
-        )
+    return JsonResponse(
+        {"message": "Processing started", "task_id": task.id}, status=202
+    )
 
-        if not output_path or not os.path.exists(output_path):
-            return HttpResponse("Conversion failed", status=500)
 
-        response = FileResponse(
-            open(output_path, "rb"), content_type="application/geopackage+sqlite3"
-        )
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def download_result(request, filename):
 
-        response["Content-Disposition"] = f'attachment; filename="{base_name}.gpkg"'
+    file_path = f"media/results/{filename}"
 
-        return response
+    if not os.path.exists(file_path):
+        return HttpResponse("File not ready or expired", status=404)
 
-    except Exception as e:
-        return HttpResponse(f"Error: {str(e)}", status=500)
+    return FileResponse(open(file_path, "rb"))
 
-    finally:
-        if os.path.exists(temp_dxf_path):
-            os.remove(temp_dxf_path)
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def task_status(request, task_id):
+
+    result = AsyncResult(task_id, app=app)
+
+    if result.state == "PENDING":
+        return JsonResponse({"status": "pending"})
+
+    elif result.state == "SUCCESS":
+        return JsonResponse({"status": "done", "data": result.result})
+
+    elif result.state == "FAILURE":
+        return JsonResponse({"status": "failed"})
+
+    return JsonResponse({"status": result.state})

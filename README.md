@@ -14,7 +14,8 @@ techstack
   - jwt authentication
   - routers api endpoints
 2. Docker 
-3. Github Actions
+3. Celery and Redis -> background tasks
+4. Github Actions -> CI/CD
 
 
 ---
