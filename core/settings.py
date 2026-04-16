@@ -99,6 +99,7 @@ INSTALLED_APPS = [
     "api",
     "jobs",
     "case_study",
+    "customer",
 ]
 
 MIDDLEWARE = [
@@ -332,9 +333,16 @@ CELERY_RESULT_BACKEND = "redis://django-utils-redis:6379/0"
 # ----------------------------
 # CACHE
 # ----------------------------
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://django-utils-redis:6379/1",
+if IS_PROD:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": "redis://django-utils-redis:6379/1",
+        }
     }
-}
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        }
+    }
