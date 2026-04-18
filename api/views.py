@@ -7,7 +7,7 @@ import os
 
 from rest_framework import viewsets
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
@@ -66,6 +66,7 @@ class UploadStatusView(APIView):
 
 class UploadDatasetView(APIView):
     """
+    POST /projects/upload/
     POST:
     - project_id (int)
     - file (GeoJSON)
@@ -151,6 +152,7 @@ class UploadDatasetView(APIView):
             # =========================
             layer, created = Layer.objects.get_or_create(
                 project=project,
+                dataset_version=version,
                 geometry_type=geom_type,
                 defaults={
                     "is_active": True,
@@ -226,6 +228,29 @@ class UploadDatasetView(APIView):
 
 
 class ProjectFeaturesView(APIView):
+    """
+    GET /project/{project_id}/features/
+
+    Query Params:
+        active=true
+            → filters:
+              Layer.is_active = True
+              (applied as: asset__layer__is_active=True)
+
+        version=<id>
+            → filters:
+              Asset belongs to DatasetVersion
+
+        layer=<name>
+            → filters:
+              asset__layer__name = <name>
+
+    Example:
+        /project/4/features/?active=true
+        → returns only features whose Layer.is_active = True
+    """
+
+    permission_classes = [AllowAny]
 
     def get(self, request, project_id):
 

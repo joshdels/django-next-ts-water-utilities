@@ -105,7 +105,7 @@ class Asset(models.Model):
 
 
 class Node(models.Model):
-    asset = models.OneToOneField(Asset, on_delete=models.CASCADE, related_name="node")
+    asset = models.ForeignKey(Asset, on_delete=models.CASCADE, related_name="node")
     geometry = models.PointField(null=True, blank=True, srid=4326)
     properties = models.JSONField(default=dict, blank=True, null=True)
 
@@ -116,7 +116,7 @@ class Node(models.Model):
 
 
 class Line(models.Model):
-    asset = models.OneToOneField(Asset, on_delete=models.CASCADE, related_name="line")
+    asset = models.ForeignKey(Asset, on_delete=models.CASCADE, related_name="line")
     start_node = models.ForeignKey(
         Node,
         on_delete=models.SET_NULL,
@@ -139,7 +139,7 @@ class Line(models.Model):
 
 
 class Area(models.Model):
-    asset = models.OneToOneField("Asset", on_delete=models.CASCADE, related_name="area")
+    asset = models.ForeignKey("Asset", on_delete=models.CASCADE, related_name="area")
 
     geometry = models.PolygonField(srid=4326)
 
